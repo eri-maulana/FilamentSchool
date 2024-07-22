@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('birthday')->nullable();
             $table->enum('religion', ['Islam', 'Katolik', 'Protestan', 'Hindu', 'Buddha', 'Khonghucu'])->default('Islam');
             $table->string('contact')->nullable();
+            $table->string('profile');
             $table->timestamps();
         });
     }
