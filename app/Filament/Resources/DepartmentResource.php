@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use stdClass;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Set;
@@ -10,6 +11,8 @@ use App\Models\Department;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DepartmentResource\Pages;
@@ -21,7 +24,7 @@ class DepartmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-server-stack';
 
-    protected static ?string $navigationLabel = 'Department';
+    // protected static ?string $navigationLabel = 'Department';
 
     public static function form(Form $form): Form
     {
@@ -42,7 +45,16 @@ class DepartmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
+            ->columns([TextColumn::make('no')->state(
+                static function (HasTable $livewire, stdClass $rowLoop): string {
+                    return (string) (
+                        $rowLoop->iteration +
+                        ($livewire->getTableRecordsPerPage() * (
+                            $livewire->getTablePage() - 1
+                        ))
+                    );
+                }
+            ),
                 Tables\Columns\TextColumn::make('name_department')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
@@ -83,5 +95,15 @@ class DepartmentResource extends Resource
             'create' => Pages\CreateDepartment::route('/create'),
             'edit' => Pages\EditDepartment::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale == 'id') {
+            return 'Jurusan';
+        } else {
+            return 'Department';
+        }
     }
 }

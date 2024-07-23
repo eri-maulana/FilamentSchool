@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use stdClass;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Teacher;
@@ -10,11 +11,12 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Columns\ColumnGroup;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TeacherResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TeacherResource\RelationManagers;
-use Filament\Tables\Columns\ColumnGroup;
 
 class TeacherResource extends Resource
 {
@@ -22,7 +24,7 @@ class TeacherResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-user-circle';
 
-    protected static ?string $navigationLabel = 'Teacher';
+    // protected static ?string $navigationLabel = 'Teacher';
 
     public static function form(Form $form): Form
     {
@@ -46,7 +48,16 @@ class TeacherResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
+            ->columns([Tables\Columns\TextColumn::make('no')->state(
+                static function (HasTable $livewire, stdClass $rowLoop): string {
+                    return (string) (
+                        $rowLoop->iteration +
+                        ($livewire->getTableRecordsPerPage() * (
+                            $livewire->getTablePage() - 1
+                        ))
+                    );
+                }
+            ),
                 Tables\Columns\TextColumn::make('nip')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
@@ -91,5 +102,15 @@ class TeacherResource extends Resource
             'create' => Pages\CreateTeacher::route('/create'),
             'edit' => Pages\EditTeacher::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale == 'id') {
+            return 'Guru';
+        } else {
+            return 'Teacher';
+        }
     }
 }

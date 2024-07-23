@@ -2,17 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\StudentResource\Pages;
-use App\Filament\Resources\StudentResource\RelationManagers;
-use App\Models\Student;
+use stdClass;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
+use App\Models\Student;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\StudentResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StudentResource\RelationManagers;
 
 class StudentResource extends Resource
 {
@@ -20,7 +23,7 @@ class StudentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-user-group';
 
-    protected static ?string $navigationLabel = 'Student';
+    // protected static ?string $navigationLabel = 'Student';
 
     public static function form(Form $form): Form
     {
@@ -39,12 +42,11 @@ class StudentResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('birthday'),
                 Forms\Components\Select::make('religion')
-                    ->options([
-                        'Islam' => 'Islam', 
-                        'Katolik' => 'Katolik', 
-                        'Protestan'=> 'Protestan', 
-                        'Hindu' => 'Hindu', 
-                        'Buddha' => 'Buddha', 
+                    ->options(['Islam' => 'Islam',
+                'Katolik' => 'Katolik',
+                'Protestan' => 'Protestan',
+                'Hindu' => 'Hindu',
+                'Buddha' => 'Buddha',
                         'Khonghucu' => 'Khonghucu'
                     ])
                     ->required(),
@@ -58,7 +60,16 @@ class StudentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
+            ->columns([TextColumn::make('no')->state(
+                static function (HasTable $livewire, stdClass $rowLoop): string {
+                    return (string) (
+                        $rowLoop->iteration +
+                        ($livewire->getTableRecordsPerPage() * (
+                            $livewire->getTablePage() - 1
+                        ))
+                    );
+                }
+            ),
                 Tables\Columns\TextColumn::make('nis')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
@@ -107,5 +118,15 @@ class StudentResource extends Resource
             'create' => Pages\CreateStudent::route('/create'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale == 'id') {
+            return 'Murid';
+        } else {
+            return 'Students';
+        }
     }
 }

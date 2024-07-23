@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use stdClass;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Set;
@@ -12,6 +13,7 @@ use App\Models\CategoryNilai;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -24,7 +26,7 @@ class CategoryNilaiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
-    protected static ?string $navigationLabel = 'Category Nilai';
+    // protected static ?string $navigationLabel = 'Category Nilai';
 
     public static function form(Form $form): Form
     {
@@ -44,6 +46,16 @@ class CategoryNilaiResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('no')->state(
+                    static function (HasTable $livewire, stdClass $rowLoop): string {
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecordsPerPage() * (
+                                $livewire->getTablePage() - 1
+                            ))
+                        );
+                    }
+                ),
                 TextColumn::make('name'),
                 TextColumn::make('slug')
             ])
@@ -66,5 +78,15 @@ class CategoryNilaiResource extends Resource
         return [
             'index' => Pages\ManageCategoryNilais::route('/'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale == 'id') {
+            return 'Kategori Nilai';
+        } else {
+            return 'Category Nilai';
+        }
     }
 }
