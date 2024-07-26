@@ -42,34 +42,37 @@ class StudentResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('birthday'),
                 Forms\Components\Select::make('religion')
-                    ->options(['Islam' => 'Islam',
-                'Katolik' => 'Katolik',
-                'Protestan' => 'Protestan',
-                'Hindu' => 'Hindu',
-                'Buddha' => 'Buddha',
+                ->options([
+                    'Islam' => 'Islam',
+                    'Katolik' => 'Katolik',
+                    'Protestan' => 'Protestan',
+                    'Hindu' => 'Hindu',
+                    'Buddha' => 'Buddha',
                         'Khonghucu' => 'Khonghucu'
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('contact')
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('profile')
-                    ->directory('profile'),
-            ]);
+                ->directory('profile')
+                ->columnSpan(2),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([TextColumn::make('no')->state(
-                static function (HasTable $livewire, stdClass $rowLoop): string {
-                    return (string) (
-                        $rowLoop->iteration +
-                        ($livewire->getTableRecordsPerPage() * (
-                            $livewire->getTablePage() - 1
-                        ))
-                    );
-                }
-            ),
+            ->columns([
+                TextColumn::make('no')->state(
+                    static function (HasTable $livewire, stdClass $rowLoop): string {
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecordsPerPage() * (
+                                $livewire->getTablePage() - 1
+                            ))
+                        );
+                    }
+                ),
                 Tables\Columns\TextColumn::make('nis')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
