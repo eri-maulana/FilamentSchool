@@ -56,7 +56,7 @@ class StudentResource extends Resource
                 Forms\Components\FileUpload::make('profile')
                 ->directory('profile')
                 ->columnSpan(2),
-            ])->columns(2);
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -98,6 +98,7 @@ class StudentResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -120,6 +121,7 @@ class StudentResource extends Resource
             'index' => Pages\ListStudents::route('/'),
             'create' => Pages\CreateStudent::route('/create'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
+            'view' => Pages\ViewStudent::route('/{record}'),
         ];
     }
 
