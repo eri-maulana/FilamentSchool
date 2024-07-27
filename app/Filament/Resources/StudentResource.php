@@ -9,6 +9,8 @@ use App\Models\Student;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Collection;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Columns\ImageColumn;
@@ -93,6 +95,8 @@ class StudentResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('status')
+            ->formatStateUsing(fn (string $state): string => ucwords("{$state}"))
             ])
             ->filters([
                 //
@@ -101,8 +105,22 @@ class StudentResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->bulkActions([Tables\Actions\BulkActionGroup::make([
+                BulkAction::make('Accept')
+                    ->icon('heroicon-m-check')
+                    ->requiresConfirmation()
+                    ->action(function (Collection $records) {
+                        return $records->each->update(['status' => 'accept']);
+                    }),
+                BulkAction::make('Off')
+                    ->icon('heroicon-m-x-circle')
+                    ->requiresConfirmation()
+                    ->action(function (Collection $records) {
+                        return $records->each(function ($record) {
+                            $id = $record->id;
+                            Student::where('id', $id)->update(['status' => 'off']);
+                        });
+                    }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
