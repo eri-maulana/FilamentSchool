@@ -94,14 +94,14 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('birthday')
                 ->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\TextColumn::make('religion')
-                ->label('Agama'),
+                ->label('Agama')
+                ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('contact')
                 ->label('Kontak'),
             ImageColumn::make('profile')
                 ->label('Profil'),
             TextColumn::make('status')
                 ->label('Status')
-                ->toggleable(isToggledHiddenByDefault: true)
                 ->formatStateUsing(fn (string $state): string => ucwords("{$state}")),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -112,14 +112,15 @@ class StudentResource extends Resource
                     ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([SelectFilter::make('status')
-                ->multiple()
-                ->options([
-                    'accept' => 'Accept',
-                    'off' => 'Off',
-                    'move' => 'Move',
-                    'grade' => 'Grade',
-                ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->multiple()
+                    ->options([
+                        'accept' => 'Accept',
+                        'off' => 'Off',
+                        'move' => 'Move',
+                        'grade' => 'Grade',
+                    ])
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
