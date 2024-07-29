@@ -27,6 +27,12 @@ class StudentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-user-group';
 
+    protected static ?string $navigationLabel = 'Student';
+
+    protected static ?string $navigationGroup = 'Academic';
+
+    protected static ?int $navigationSort = 12;
+
     // protected static ?string $navigationLabel = 'Student';
 
     public static function form(Form $form): Form

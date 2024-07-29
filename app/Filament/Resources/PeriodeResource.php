@@ -26,6 +26,10 @@ class PeriodeResource extends Resource
 
     protected static ?string $navigationLabel = 'Periode';
 
+    protected static ?string $navigationGroup = 'Setting';
+
+    protected static ?int $navigationSort = 31;
+
     public static function form(Form $form): Form
     {
         return $form

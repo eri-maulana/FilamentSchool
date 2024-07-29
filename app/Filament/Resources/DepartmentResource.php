@@ -24,7 +24,11 @@ class DepartmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-server-stack';
 
-    // protected static ?string $navigationLabel = 'Department';
+    protected static ?string $navigationLabel = 'Departemen';
+
+    protected static ?string $navigationGroup = 'Source';
+
+    protected static ?int $navigationSort = 23;
 
     public static function form(Form $form): Form
     {

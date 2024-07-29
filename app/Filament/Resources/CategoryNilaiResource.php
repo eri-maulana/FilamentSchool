@@ -26,7 +26,11 @@ class CategoryNilaiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
-    // protected static ?string $navigationLabel = 'Category Nilai';
+    protected static ?string $navigationLabel = 'Categori Nilai';
+
+    protected static ?string $navigationGroup = 'Source';
+
+    protected static ?int $navigationSort = 21;
 
     public static function form(Form $form): Form
     {
