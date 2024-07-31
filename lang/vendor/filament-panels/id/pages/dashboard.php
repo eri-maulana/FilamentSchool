@@ -2,7 +2,7 @@
 
 return [
 
-    'title' => 'Beranda',
+    'title' => 'Dashboard',
 
     'actions' => [
 
